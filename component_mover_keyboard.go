@@ -43,7 +43,7 @@ func (mover *moverKeyboard) onUpdate() error {
 	}
 	cRight := Circle{
 		Radius: 1,
-		Center: Vector{X: ScreenWidth, Y: mover.container.Position.Y},
+		Center: Vector{X: float64(Config.ScreenWidth), Y: mover.container.Position.Y},
 	}
 	cTop := Circle{
 		Radius: 1,
@@ -51,7 +51,7 @@ func (mover *moverKeyboard) onUpdate() error {
 	}
 	cBottom := Circle{
 		Radius: 1,
-		Center: Vector{X: mover.container.Position.X, Y: ScreenHeight},
+		Center: Vector{X: mover.container.Position.X, Y: float64(Config.ScreenHeight)},
 	}
 
 	// Handle direction keys and check of we collide.

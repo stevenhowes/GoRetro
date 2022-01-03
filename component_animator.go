@@ -99,6 +99,8 @@ func NewSequence(
 
 	var seq Sequence
 
+	filepath = Config.DataDir + filepath
+
 	// Get a list of frames
 	files, err := ioutil.ReadDir(filepath)
 	if err != nil {

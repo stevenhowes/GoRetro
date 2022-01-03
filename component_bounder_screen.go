@@ -25,8 +25,8 @@ func (bounder *bounderScreen) onUpdate() error {
 
 	// If the position is outside the screen bounds then set it as inactive
 	// and mark for deletion
-	if b.Position.X > ScreenWidth || b.Position.X < 0 ||
-		b.Position.Y > ScreenHeight || b.Position.Y < 0 {
+	if b.Position.X > float64(Config.ScreenWidth) || b.Position.X < 0 ||
+		b.Position.Y > float64(Config.ScreenHeight) || b.Position.Y < 0 {
 		b.Active = false
 		b.Delete = true
 	}

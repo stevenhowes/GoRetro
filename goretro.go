@@ -1,17 +1,126 @@
 package GoRetro
 
-import "time"
+import (
+	"fmt"
+	"time"
 
-const (
-	ScreenWidth  = 1024
-	ScreenHeight = 768
-
-	TargetTicksPerSecond   = 60
-	DebugStatePrintSeconds = 1
-
-	dataDir = "data/"
+	"github.com/veandco/go-sdl2/sdl"
 )
+
+var Config struct {
+	ScreenWidth  int32
+	ScreenHeight int32
+
+	TargetTicksPerSecond   float64
+	DebugStatePrintSeconds float64
+
+	DataDir string
+}
 
 var Delta float64
 var LastDebugStatePrint time.Time
 var DebugTick bool
+
+func Init() (*sdl.Renderer, *sdl.Window) {
+	if err := sdl.Init(sdl.INIT_EVERYTHING); err != nil {
+		fmt.Println("initializing SDL:", err)
+		return nil, nil
+	}
+
+	fmt.Printf("%d x %d", Config.ScreenWidth, Config.ScreenHeight)
+
+	window, err := sdl.CreateWindow(
+		"GoEscape",
+		sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
+		Config.ScreenWidth, Config.ScreenHeight,
+		sdl.WINDOW_OPENGL)
+	if err != nil {
+		fmt.Println("initializing window:", err)
+		return nil, nil
+	}
+
+	renderer, err := sdl.CreateRenderer(window, -1, sdl.RENDERER_ACCELERATED)
+	if err != nil {
+		fmt.Println("initializing renderer:", err)
+		return nil, nil
+	}
+
+	TexList = make(map[string]*sdl.Texture)
+
+	LastDebugStatePrint = time.Now()
+
+	return renderer, window
+}
+
+func Tick(renderer *sdl.Renderer) bool {
+	if time.Since(LastDebugStatePrint).Seconds() > Config.DebugStatePrintSeconds {
+		DebugTick = true
+		LastDebugStatePrint = time.Now()
+	} else {
+		DebugTick = false
+	}
+
+	frameStartTime := time.Now()
+
+	for event := sdl.PollEvent(); event != nil; event = sdl.PollEvent() {
+		switch event.(type) {
+		case *sdl.QuitEvent:
+			return false
+		}
+	}
+
+	renderer.SetDrawColor(0, 0, 0, 255)
+	renderer.Clear()
+
+	var maxZ = 0
+	for _, elem := range Elements {
+		if elem.Active {
+			err := elem.Update()
+			if err != nil {
+				fmt.Println("updating element:", err)
+				return false
+			}
+			if elem.ZIndex > maxZ {
+				maxZ = elem.ZIndex
+			}
+		}
+	}
+	for z := 0; z <= maxZ; z++ {
+		for _, elem := range Elements {
+			if elem.ZIndex == z {
+				if elem.Active {
+					err := elem.Draw()
+					if err != nil {
+						fmt.Println("drawing element:", err)
+						return false
+					}
+				}
+			}
+		}
+	}
+
+	if err := CheckCollisions(); err != nil {
+		fmt.Println("checking collisions:", err)
+		return false
+	}
+
+	renderer.Present()
+
+	var truncate int = 0
+	for i, elem := range Elements {
+		if elem.Delete {
+			copy(Elements[i:], Elements[i+1:])
+			truncate++
+		}
+	}
+	Elements = Elements[:len(Elements)-truncate]
+
+	if DebugTick {
+		fmt.Printf("TPS: %d\n", 1000000/(time.Since(frameStartTime).Microseconds()+1))
+		fmt.Printf("Elements: %d\n", len(Elements))
+
+	}
+
+	Delta = time.Since(frameStartTime).Seconds() * Config.TargetTicksPerSecond
+	return true
+}

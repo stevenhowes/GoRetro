@@ -25,17 +25,17 @@ func (bounder *bounderScreenResetting) onUpdate() error {
 
 	// If any position exceeds the screen dimensions, wrap it to the
 	// opposite side
-	if b.Position.X > ScreenWidth {
+	if b.Position.X > float64(Config.ScreenWidth) {
 		b.Position.X = 0
 	}
 	if b.Position.X < 0 {
-		b.Position.X = ScreenWidth
+		b.Position.X = float64(Config.ScreenWidth)
 	}
-	if b.Position.Y > ScreenHeight {
+	if b.Position.Y > float64(Config.ScreenHeight) {
 		b.Position.Y = 0
 	}
 	if b.Position.Y < 0 {
-		b.Position.Y = ScreenWidth
+		b.Position.Y = float64(Config.ScreenWidth)
 	}
 
 	return nil
