@@ -4,16 +4,19 @@ package GoRetro
  * --------------------
  * BounderScreen
  * --------------------
- * A bounder which sets active = false on anything which
- * has left the screen
+ * A bounder which triggers if the element isn't on the screen
  */
 
 type bounderScreen struct {
-	container *Element
+	container    *Element
+	callbackFunc func(element *Element)
 }
 
-func NewBounderScreen(container *Element) *bounderScreen {
-	return &bounderScreen{container: container}
+func NewBounderScreen(container *Element, callback func(element *Element)) *bounderScreen {
+	return &bounderScreen{
+		container:    container,
+		callbackFunc: callback,
+	}
 }
 
 func (bounder *bounderScreen) onDraw() error {
@@ -23,12 +26,9 @@ func (bounder *bounderScreen) onDraw() error {
 func (bounder *bounderScreen) onUpdate() error {
 	b := bounder.container
 
-	// If the position is outside the screen bounds then set it as inactive
-	// and mark for deletion
 	if b.Position.X > float64(Config.ScreenWidth) || b.Position.X < 0 ||
 		b.Position.Y > float64(Config.ScreenHeight) || b.Position.Y < 0 {
-		b.Active = false
-		b.Delete = true
+		bounder.callbackFunc(bounder.container)
 	}
 
 	return nil
