@@ -43,10 +43,6 @@ func (dr *damageReceiver) onUpdate() error {
 			lm := dr.container.getComponent(&moverLinear{}).(*moverLinear)
 			lm.speed = 0
 		}
-		if dr.container.checkComponentIsPresent(&moverKeyboard{}) {
-			km := dr.container.getComponent(&moverKeyboard{}).(*moverKeyboard)
-			km.speed = 0
-		}
 	}
 
 	// If we've finished our destroy animation then we're not active and can be removed

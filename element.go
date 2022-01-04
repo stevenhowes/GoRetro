@@ -61,7 +61,7 @@ func (elem *Element) collision(other *Element) error {
 	return nil
 }
 
-func (elem *Element) AddComponent(new component) {
+func (elem *Element) AddComponentUnique(new component) {
 	for _, existing := range elem.components {
 		if reflect.TypeOf(new) == reflect.TypeOf(existing) {
 			panic(fmt.Sprintf(
@@ -69,6 +69,10 @@ func (elem *Element) AddComponent(new component) {
 				reflect.TypeOf(new)))
 		}
 	}
+	elem.AddComponent(new)
+}
+
+func (elem *Element) AddComponent(new component) {
 	elem.components = append(elem.components, new)
 }
 
