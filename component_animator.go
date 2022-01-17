@@ -58,6 +58,8 @@ func (an *animator) onDraw() error {
 
 	return drawTexture(
 		tex,
+		VectorInt32{-1, -1},
+		VectorInt32{0, 0},
 		an.container.Position,
 		an.container.Rotation,
 		an.container.Renderer)

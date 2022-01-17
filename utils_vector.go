@@ -7,6 +7,11 @@ type Vector struct {
 	Y float64
 }
 
+type VectorInt32 struct {
+	X int32
+	Y int32
+}
+
 func vectorAdd(v1, v2 Vector) Vector {
 	return Vector{
 		X: v1.X + v2.X,

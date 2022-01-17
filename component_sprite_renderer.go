@@ -48,6 +48,8 @@ func (sr *spriteRenderer) onUpdate() error {
 func (sr *spriteRenderer) onDraw() error {
 	return drawTexture(
 		sr.tex,
+		VectorInt32{-1, -1},
+		VectorInt32{0, 0},
 		sr.container.Position,
 		sr.container.Rotation,
 		sr.container.Renderer)
