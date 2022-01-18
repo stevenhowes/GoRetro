@@ -30,14 +30,14 @@ func NewAnimator(
 	imagepath string,
 	sequences map[string]*Sequence,
 	defaultSequence string,
-	renderer *sdl.Renderer) *animator {
+	renderer *sdl.Renderer) (*animator, error) {
 	var an animator
 
 	imagepath = Config.DataDir + imagepath
 
 	tex, err := loadTextureFromBMP(imagepath, renderer)
 	if err != nil {
-		fmt.Println("texture err ", err)
+		return nil, err
 	}
 
 	an.tex = tex
@@ -46,7 +46,7 @@ func NewAnimator(
 	an.current = defaultSequence
 	an.lastFrameChange = time.Now()
 
-	return &an
+	return &an, nil
 }
 
 func (an *animator) onUpdate() error {
@@ -80,7 +80,20 @@ func (an *animator) onCollision(other *Element) error {
 }
 
 func (an *animator) setSequence(name string) bool {
-	return false
+	_, ok := an.sequences[name]
+	if ok {
+		// If we *are* changing sequence, change the name and reset the frame
+		if an.current != name {
+			// Reset the old sequence to frame 0
+			sequence := an.sequences[an.current]
+			sequence.resetFrame()
+
+			// Use the new sequence
+			an.current = name
+			an.lastFrameChange = time.Now()
+		}
+	}
+	return ok
 }
 
 //-----------------------------------------------------------------------------
@@ -110,12 +123,11 @@ func NewSequence(
 
 	jsonFile, err := os.Open(indexpath)
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		return nil, err
 	}
 	jsonParser := json.NewDecoder(jsonFile)
 	if err = jsonParser.Decode(&seq.frames); err != nil {
-		fmt.Println("parser err ", err)
+		return nil, err
 	}
 	defer jsonFile.Close()
 
