@@ -18,6 +18,7 @@ var Config struct {
 	DebugStatePrintSeconds float64
 
 	DataDir string
+	PakFile string
 }
 
 var Delta float64
@@ -33,7 +34,7 @@ func Init() (*sdl.Renderer, *sdl.Window) {
 		return nil, nil
 	}
 
-	fmt.Printf("%d x %d", Config.WindowSize.X, Config.WindowSize.Y)
+	fmt.Printf("Created window %d x %d\n", Config.WindowSize.X, Config.WindowSize.Y)
 
 	window, err := sdl.CreateWindow(
 		"GoEscape",
@@ -54,6 +55,14 @@ func Init() (*sdl.Renderer, *sdl.Window) {
 	TexList = make(map[string]*sdl.Texture)
 	FileList = make(map[string]*vFile)
 
+	if Config.PakFile != "" {
+		PakLoad(Config.PakFile)
+		if err != nil {
+			fmt.Println("loading pak ", Config.PakFile, err)
+			defer pak.PakClose()
+		}
+
+	}
 	LastDebugStatePrint = time.Now()
 
 	return renderer, window
