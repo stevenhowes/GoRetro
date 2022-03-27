@@ -21,6 +21,7 @@ type Element struct {
 	Rotation         float64
 	Active           bool
 	Delete           bool
+	Kill             bool
 	Collisions       []Circle
 	components       []component
 	parentElement    *Element

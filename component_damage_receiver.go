@@ -25,6 +25,9 @@ func (dr *damageReceiver) onDraw() error {
 }
 
 func (dr *damageReceiver) onUpdate() error {
+	if dr.container.Kill {
+		dr.health = -1
+	}
 	// If we're out of health
 	if dr.health <= 0 {
 		// If we have an animator, run the destroy sequence
