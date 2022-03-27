@@ -9,7 +9,6 @@ package GoRetro
 
 import (
 	"encoding/json"
-	"os"
 	"time"
 
 	"github.com/veandco/go-sdl2/sdl"
@@ -31,8 +30,6 @@ func NewAnimator(
 	defaultSequence string,
 	renderer *sdl.Renderer) (*animator, error) {
 	var an animator
-
-	imagepath = Config.DataDir + imagepath
 
 	tex, err := loadTextureFromBMP(imagepath, renderer)
 	if err != nil {
@@ -122,17 +119,9 @@ func NewSequence(
 
 	var seq Sequence
 
-	indexpath = Config.DataDir + indexpath
+	jsonFile := GetFile(indexpath)
 
-	jsonFile, err := os.Open(indexpath)
-	if err != nil {
-		return nil, err
-	}
-	jsonParser := json.NewDecoder(jsonFile)
-	if err = jsonParser.Decode(&seq.frames); err != nil {
-		return nil, err
-	}
-	defer jsonFile.Close()
+	json.Unmarshal(jsonFile.Data, &seq.frames)
 
 	seq.frame = 0
 	seq.sampleRate = sampleRate

@@ -47,7 +47,10 @@ func loadTextureFromBMP(filename string, renderer *sdl.Renderer) (*sdl.Texture, 
 		return val, nil
 	}
 
-	img, err := sdl.LoadBMP(filename)
+	vFile := GetFile(filename)
+	file, _ := sdl.RWFromMem(vFile.Data)
+
+	img, err := sdl.LoadBMPRW(file, true)
 	if err != nil {
 		return nil, fmt.Errorf("loading %v: %v", filename, err)
 	}

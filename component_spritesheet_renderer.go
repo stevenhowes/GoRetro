@@ -21,7 +21,6 @@ func NewSpriteSheetRenderer(container *Element, renderer *sdl.Renderer, filename
 	sr := &spriteSheetRenderer{}
 	var err error
 
-	filename = Config.DataDir + filename
 	sr.tex, err = loadTextureFromBMP(filename, renderer)
 	if err != nil {
 		panic(err)
