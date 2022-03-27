@@ -24,6 +24,9 @@ var Delta float64
 var LastDebugStatePrint time.Time
 var DebugTick bool
 
+var CacheHitsFile int
+var CacheHitsTex int
+
 func Init() (*sdl.Renderer, *sdl.Window) {
 	if err := sdl.Init(sdl.INIT_EVERYTHING); err != nil {
 		fmt.Println("initializing SDL:", err)
@@ -49,6 +52,7 @@ func Init() (*sdl.Renderer, *sdl.Window) {
 	}
 
 	TexList = make(map[string]*sdl.Texture)
+	FileList = make(map[string]*vFile)
 
 	LastDebugStatePrint = time.Now()
 
@@ -123,6 +127,8 @@ func Tick(renderer *sdl.Renderer) bool {
 		fmt.Printf("TPS: %d\n", 1000000/(time.Since(frameStartTime).Microseconds()+1))
 		fmt.Printf("Elements: %d\n", len(Elements))
 		fmt.Printf("Viewport: %.0f %.0f %.0f %.0f\n", ViewPort.Position.X, ViewPort.Position.Y, ViewPort.Size.X, ViewPort.Size.Y)
+		fmt.Printf("Cache hits: File %d Texture %d\n", CacheHitsFile, CacheHitsTex)
+
 	}
 
 	Delta = time.Since(frameStartTime).Seconds() * Config.TargetTicksPerSecond

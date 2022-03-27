@@ -9,6 +9,7 @@ package GoRetro
 
 import (
 	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/veandco/go-sdl2/sdl"
@@ -119,7 +120,10 @@ func NewSequence(
 
 	var seq Sequence
 
-	jsonFile := GetFile(indexpath)
+	jsonFile, err := GetFile(indexpath)
+	if err != nil {
+		return nil, fmt.Errorf("loading sequence %v: %v", indexpath, err)
+	}
 
 	json.Unmarshal(jsonFile.Data, &seq.frames)
 

@@ -44,15 +44,23 @@ func drawTexture(
 
 func loadTextureFromBMP(filename string, renderer *sdl.Renderer) (*sdl.Texture, error) {
 	if val, ok := TexList[filename]; ok {
+		CacheHitsTex++
 		return val, nil
 	}
 
-	vFile := GetFile(filename)
-	file, _ := sdl.RWFromMem(vFile.Data)
+	vFile, err := GetFile(filename)
+	if err != nil {
+		return nil, fmt.Errorf("loading %v: %v", filename, err)
+	}
+
+	file, err := sdl.RWFromMem(vFile.Data)
+	if err != nil {
+		return nil, fmt.Errorf("making RW from %v: %v", filename, err)
+	}
 
 	img, err := sdl.LoadBMPRW(file, true)
 	if err != nil {
-		return nil, fmt.Errorf("loading %v: %v", filename, err)
+		return nil, fmt.Errorf("loading from RW for file %v: %v", filename, err)
 	}
 	defer img.Free()
 	tex, err := renderer.CreateTextureFromSurface(img)
@@ -61,6 +69,6 @@ func loadTextureFromBMP(filename string, renderer *sdl.Renderer) (*sdl.Texture, 
 	}
 
 	TexList[filename] = tex
-	fmt.Printf("Caching %s\n", filename)
+	fmt.Printf("Texture Caching %s\n", filename)
 	return tex, nil
 }

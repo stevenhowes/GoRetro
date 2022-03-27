@@ -8,18 +8,31 @@ package GoRetro
  * the use of archive files etc in future.
  */
 
-import "os"
+import (
+	"fmt"
+	"os"
+)
 
 type vFile struct {
 	Data []byte
 	Size int
 }
 
-func GetFile(filename string) *vFile {
-	Data, _ := os.ReadFile(Config.DataDir + filename)
+var FileList map[string]*vFile
+
+func GetFile(filename string) (*vFile, error) {
+	if val, ok := FileList[filename]; ok {
+		CacheHitsFile++
+		return val, nil
+	}
+
+	Data, err := os.ReadFile(Config.DataDir + filename)
 	vf := vFile{
 		Size: len(Data),
 		Data: Data,
 	}
-	return &vf
+
+	fmt.Printf("File Caching %s\n", filename)
+	FileList[filename] = &vf
+	return &vf, err
 }
