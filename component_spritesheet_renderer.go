@@ -42,11 +42,16 @@ func (sr *spriteSheetRenderer) onUpdate() error {
 }
 
 func (sr *spriteSheetRenderer) onDraw() error {
+	Position := ViewPort.Position
+	if !sr.container.PositionAbsolute {
+		Position = vectorAdd(sr.container.Position, ViewPort.Position)
+	}
+
 	return drawTexture(
 		sr.tex,
 		sr.size,
 		sr.sheetposition,
-		sr.container.Position,
+		Position,
 		sr.container.Rotation,
 		sr.container.Renderer)
 }

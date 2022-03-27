@@ -14,16 +14,18 @@ type component interface {
 }
 
 type Element struct {
-	Renderer       *sdl.Renderer
-	Position       Vector
-	Rotation       float64
-	Active         bool
-	Delete         bool
-	Collisions     []Circle
-	components     []component
-	parentElement  *Element
-	ZIndex         int
-	CollisionLayer int
+	Renderer         *sdl.Renderer
+	Position         Vector
+	SpawnPosition    Vector
+	PositionAbsolute bool
+	Rotation         float64
+	Active           bool
+	Delete           bool
+	Collisions       []Circle
+	components       []component
+	parentElement    *Element
+	ZIndex           int
+	CollisionLayer   int
 }
 
 var Elements []*Element

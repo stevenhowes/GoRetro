@@ -46,11 +46,16 @@ func (sr *spriteRenderer) onUpdate() error {
 }
 
 func (sr *spriteRenderer) onDraw() error {
+	Position := sr.container.Position
+	if !sr.container.PositionAbsolute {
+		Position = vectorAdd(sr.container.Position, ViewPort.Position)
+	}
+
 	return drawTexture(
 		sr.tex,
 		VectorInt32{-1, -1},
 		VectorInt32{0, 0},
-		sr.container.Position,
+		Position,
 		sr.container.Rotation,
 		sr.container.Renderer)
 }

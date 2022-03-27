@@ -9,7 +9,6 @@ package GoRetro
 
 import (
 	"encoding/json"
-	"fmt"
 	"os"
 	"time"
 
@@ -65,12 +64,16 @@ func (an *animator) onUpdate() error {
 }
 
 func (an *animator) onDraw() error {
+	Position := an.container.Position
+	if !an.container.PositionAbsolute {
+		Position = vectorAdd(an.container.Position, ViewPort.Position)
+	}
 
 	return drawTexture(
 		an.tex,
 		VectorInt32{an.sequences[an.current].frames[an.sequences[an.current].frame].W, an.sequences[an.current].frames[an.sequences[an.current].frame].H},
 		VectorInt32{an.sequences[an.current].frames[an.sequences[an.current].frame].X, an.sequences[an.current].frames[an.sequences[an.current].frame].Y},
-		an.container.Position,
+		Position,
 		an.container.Rotation,
 		an.container.Renderer)
 }
@@ -130,8 +133,6 @@ func NewSequence(
 		return nil, err
 	}
 	defer jsonFile.Close()
-
-	fmt.Println(seq.frames)
 
 	seq.frame = 0
 	seq.sampleRate = sampleRate

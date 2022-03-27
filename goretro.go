@@ -7,10 +7,13 @@ import (
 	"github.com/veandco/go-sdl2/sdl"
 )
 
-var Config struct {
-	ScreenWidth  int32
-	ScreenHeight int32
+var ViewPort struct {
+	Size     Vector
+	Position Vector
+}
 
+var Config struct {
+	WindowSize             VectorInt32
 	TargetTicksPerSecond   float64
 	DebugStatePrintSeconds float64
 
@@ -27,12 +30,12 @@ func Init() (*sdl.Renderer, *sdl.Window) {
 		return nil, nil
 	}
 
-	fmt.Printf("%d x %d", Config.ScreenWidth, Config.ScreenHeight)
+	fmt.Printf("%d x %d", Config.WindowSize.X, Config.WindowSize.Y)
 
 	window, err := sdl.CreateWindow(
 		"GoEscape",
 		sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
-		Config.ScreenWidth, Config.ScreenHeight,
+		Config.WindowSize.X, Config.WindowSize.Y,
 		sdl.WINDOW_OPENGL)
 	if err != nil {
 		fmt.Println("initializing window:", err)
@@ -116,9 +119,10 @@ func Tick(renderer *sdl.Renderer) bool {
 	Elements = Elements[:len(Elements)-truncate]
 
 	if DebugTick {
+		fmt.Printf("\n\n--\n")
 		fmt.Printf("TPS: %d\n", 1000000/(time.Since(frameStartTime).Microseconds()+1))
 		fmt.Printf("Elements: %d\n", len(Elements))
-
+		fmt.Printf("Viewport: %f %f %f %f\n", ViewPort.Position.X, ViewPort.Position.Y, ViewPort.Size.X, ViewPort.Size.Y)
 	}
 
 	Delta = time.Since(frameStartTime).Seconds() * Config.TargetTicksPerSecond
