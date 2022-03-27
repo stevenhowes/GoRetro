@@ -122,7 +122,7 @@ func Tick(renderer *sdl.Renderer) bool {
 		fmt.Printf("\n\n--\n")
 		fmt.Printf("TPS: %d\n", 1000000/(time.Since(frameStartTime).Microseconds()+1))
 		fmt.Printf("Elements: %d\n", len(Elements))
-		fmt.Printf("Viewport: %f %f %f %f\n", ViewPort.Position.X, ViewPort.Position.Y, ViewPort.Size.X, ViewPort.Size.Y)
+		fmt.Printf("Viewport: %.0f %.0f %.0f %.0f\n", ViewPort.Position.X, ViewPort.Position.Y, ViewPort.Size.X, ViewPort.Size.Y)
 	}
 
 	Delta = time.Since(frameStartTime).Seconds() * Config.TargetTicksPerSecond
