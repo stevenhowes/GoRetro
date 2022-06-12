@@ -14,6 +14,7 @@ var ViewPort struct {
 
 var Config struct {
 	WindowSize             VectorInt32
+	Scale                  int32
 	TargetTicksPerSecond   float64
 	DebugStatePrintSeconds float64
 
@@ -34,12 +35,12 @@ func Init() (*sdl.Renderer, *sdl.Window) {
 		return nil, nil
 	}
 
-	fmt.Printf("Created window %d x %d\n", Config.WindowSize.X, Config.WindowSize.Y)
+	fmt.Printf("Created window %d x %d\n", Config.WindowSize.X*int32(Config.Scale), Config.WindowSize.Y*int32(Config.Scale))
 
 	window, err := sdl.CreateWindow(
 		"GoEscape",
 		sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
-		Config.WindowSize.X, Config.WindowSize.Y,
+		Config.WindowSize.X*int32(Config.Scale), Config.WindowSize.Y*int32(Config.Scale),
 		sdl.WINDOW_OPENGL)
 	if err != nil {
 		fmt.Println("initializing window:", err)

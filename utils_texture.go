@@ -36,9 +36,9 @@ func drawTexture(
 	return renderer.CopyEx(
 		tex,
 		&sdl.Rect{X: sheetposition.X, Y: sheetposition.Y, W: size.X, H: size.Y},
-		&sdl.Rect{X: int32(position.X), Y: int32(position.Y), W: size.X, H: size.Y},
+		&sdl.Rect{X: int32(position.X) * Config.Scale, Y: int32(position.Y) * Config.Scale, W: size.X * Config.Scale, H: size.Y * Config.Scale},
 		rotation,
-		&sdl.Point{X: size.X / 2, Y: size.Y / 2},
+		&sdl.Point{X: (size.X * Config.Scale) / 2, Y: (size.Y * Config.Scale) / 2},
 		sdl.FLIP_NONE)
 }
 
